@@ -1,12 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for,flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mysqldb import MySQL
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
+app.secret_key = os.getenv('SECRET_KEY')
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'user@0901'
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = 'waste_management'
 mysql = MySQL(app)
 
@@ -24,6 +29,12 @@ def register_user():
         phone = request.form['phone']
         role = request.form['role']
         cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM users WHERE email = %s", (email,))
+        existing_user = cur.fetchone()
+
+        if existing_user:
+            flash("Email already exists. Please use a different one.")
+            return redirect(url_for('register_user'))
         cur.execute("INSERT INTO users (name, email, password, phone, role) VALUES (%s, %s, %s, %s, %s)", (name, email, password, phone, role))
         mysql.connection.commit()
         cur.close()
