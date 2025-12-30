@@ -11,7 +11,7 @@ app.secret_key = os.getenv('SECRET_KEY')
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['MYSQL_DB'] = 'waste_management'
 mysql = MySQL(app)
 
