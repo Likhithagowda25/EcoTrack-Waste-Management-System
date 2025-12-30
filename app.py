@@ -284,6 +284,5 @@ def update_status(complaint_id):
     flash('Complaint status updated successfully!')
     return redirect(url_for('view_complaints'))
 
-
 if __name__ == '__main__':
     app.run(debug=True)
